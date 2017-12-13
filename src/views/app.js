@@ -5,19 +5,29 @@ var AppView = Backbone.View.extend({
   initialize: function() {
     this.videos = new Videos(window.exampleVideoData);
 
-    //// Experiments ////
-    this.search = new SearchView();
-
     //// This works, don't touch this ////
     this.render();
+    // this.videos.on('select', renderPlayer.bind(this,));
+    this.videos.on('select', this.renderPlayer);
   },
 
 
   render: function() {
     this.$el.html(this.template());
 
-    //// Experiments ////
-    this.search.render();
+    //// VideoListView ////
+    new VideoListView({
+      el: this.$('.list'),
+      collection: this.videos
+    }).render();
+
+    //// SearchView ////
+    new SearchView({
+      el: this.$('.search')
+    }).render();
+
+    //// PlayerView ////
+    new VideoPlayerView({ el: this.$('.player'), collection: this.videos, model: this.videos.at(0)}).render();
 
     //// Originally here ////
     return this;
